@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Class 10 | Subhajit Biswas</title>
+  <style>
+body{margin:0;background:linear-gradient(123deg,#eafbf6 0%,#eefaff 100%);}
+.head-ct{padding:28px 5vw 18px 5vw;font-family:'Segoe UI',Noto Sans Bengali,sans-serif;}
+.head-title{font-size:2.2em;font-weight:900;color:#11789b;letter-spacing:.02em;text-align:center;margin:0;}
+.head-sub{color:#d18d1d;font-weight:700;font-size:1.19em;letter-spacing:.03em;text-align:center;}
+#subjNav{display:flex;gap:13px 8vw;justify-content:center;margin:19px 2vw 22px;}
+.snav-btn{background:linear-gradient(90deg,#c6ffea 15%,#caced3 170%);border:none;border-radius:15px;
+  font-size:1.18em;font-weight:900;color:#14739e;padding:14px 39px;box-shadow:0 3.5px 16px #31ffe222;cursor:pointer;
+  transition:.15s;}
+.snav-btn.active,.snav-btn:active{background:linear-gradient(90deg,#22e6c5 4%,#aadcf7 100%);color:#084765;}
+.chapBlockGrid{display:flex;flex-wrap:wrap;gap:25px 2vw;justify-content:center;padding:9px 2vw 25px 2vw;}
+.chapCard{background:rgba(255,255,255,0.97);border-radius:17px;max-width:384px;width:97vw;min-width:233px;
+  box-shadow:0 3.5px 18px #aefef915,0 2px 7px #cafee41c;padding:27px 14px 21px 18px;animation:popchpr .35s;}
+@keyframes popchpr{0%{opacity:0;transform:scale(.93) translateY(21px);}100%{opacity:1;transform:none;}}
+.chapCard-title{font-size:1.19em;font-weight:900;color:#215c91;margin-bottom:7px;margin-top:0;}
+.chap-btns{display:flex;gap:10px;margin-top:8px;}
+.cbtn{flex:1 1 0;background:linear-gradient(93deg,#befafd 12%,#f7fff3 110%);border:none;border-radius:9px;padding:11px 0;
+  color:#166a72;font-size:1.06em;font-weight:700;cursor:pointer;transition:.12s;box-shadow:0 1px 8px #afffee23;}
+.cbtn:active{background:linear-gradient(94deg,#e3fff7 3%,#e4fff8 110%);}
+.cicon{font-size:1.12em;margin-right:6px;}
+.lockicon{color:#f7a22c;}
+.sec-modal-bg{display:none;position:fixed;z-index:770;left:0;top:0;width:100vw;height:100vh;background:rgba(24,28,44,.41);align-items:center;justify-content:center;}
+.sec-modal{background:rgba(255,255,255,1);border-radius:20px;max-width:332px;width:91vw;
+  box-shadow:0 18px 36px #defff925,0 2.5px 12px #d3ecd24a;padding:22px 14px 10px 14px;position:relative;animation:modalpop .33s;}
+@keyframes modalpop{from{transform:scale(.85) translateY(29px);opacity:0;}to{transform:none;opacity:1;}}
+.secclose{position:absolute;top:12px;right:15px;border:none;background:#eafff4;font-size:1.19em;color:#099a89;
+  border-radius:50%;width:27px;height:27px;font-weight:800;cursor:pointer;}
+.sec-modal label{font-size:1em;font-weight:800;color:#176591;margin:4px 0 4px;display:block;}
+.sec-modal input[type=password]{width:93%;padding:11px 7px;margin-top:2px;font-size:1.04em;border-radius:8px;border:1.2px solid #bde7e4;}
+.sec-modal button{margin-top:10px;background:linear-gradient(90deg,#affff6,#c5fff7);border:none;border-radius:8px;padding:8px 23px;font-size:1.07em;color:#10818f;font-weight:800;}
+.sec-modal .failmsg{color:#ca2337;padding:6px 2px 0;font-size:1em;}
+.sec-modal iframe{margin-top:10px;width:100%;min-height:340px;border:none;border-radius:7px;}
+.sec-modal .securetxt{color:#af601d;font-size:.99em;margin:7px 0 3px;}
+@media (max-width:700px){
+  #subjNav{gap:7px 2vw;}
+  .chapBlockGrid{gap:11px 1vw;}
+  .chapCard{max-width:99vw;}
+}
+  </style>
+</head>
+<body>
+  <div class="head-ct">
+    <div class="head-title">Class 10</div>
+    <div class="head-sub">Subhajit Biswas</div>
+  </div>
+  <div id="subjNav">
+    <button class="snav-btn active" onclick="switchSubject(0)">ভৌত বিজ্ঞান</button>
+    <button class="snav-btn" onclick="switchSubject(1)">জীবন বিজ্ঞান</button>
+    <button class="snav-btn" onclick="switchSubject(2)">অংক</button>
+  </div>
+  <div class="chapBlockGrid" id="chapGrid"></div>
+
+  <!-- Secure Modal (Notes/Mock PDF) -->
+  <div id="secModalBG" class="sec-modal-bg">
+    <div class="sec-modal">
+      <button class="secclose" onclick="closeSecModal()">×</button>
+      <div id="secModalTitle"></div>
+      <label id="secModalLabel">Password-Protected Section</label>
+      <input id="secModalPass" type="password" placeholder="Password দিন..." autocomplete="off"/>
+      <button onclick="unlockSecModal()">Unlock</button>
+      <span class="failmsg" id="failMsg"></span>
+      <div id="secureViewBox"></div>
+    </div>
+  </div>
+<script>
+// Subject-wise Chapter Data: শুধু ভৌত বিজ্ঞান এখানে; অন্য দুটি ফাঁকা রাখুন (জীবন বিজ্ঞান, অংক future-এ add করুন)
+const allSubj=[
+[
+// ভৌত বিজ্ঞান (Physical Science/Physics) chapter exact Bangla name, password easy: phy1, phy2, ...
+{title:"পরিবেশের জন্য ভাবনা",ytv:"https://youtube.com/phy1",notes:"https://docs.google.com/document/d/docid1/preview",npass:"phy1",pdf:"https://drive.google.com/file/d/pdf1/preview",ppass:"phy1"},
+{title:"গ্যাসের আচরণ",ytv:"https://youtube.com/phy2",notes:"https://docs.google.com/document/d/docid2/preview",npass:"phy2",pdf:"https://drive.google.com/file/d/pdf2/preview",ppass:"phy2"},
+{title:"রাসায়নিক গননা",ytv:"https://youtube.com/phy3",notes:"https://docs.google.com/document/d/docid3/preview",npass:"phy3",pdf:"https://drive.google.com/file/d/pdf3/preview",ppass:"phy3"},
+{title:"তাপের ঘটনাসমূহ",ytv:"https://youtube.com/phy4",notes:"https://docs.google.com/document/d/docid4/preview",npass:"phy4",pdf:"https://drive.google.com/file/d/pdf4/preview",ppass:"phy4"},
+{title:"আলো",ytv:"https://youtube.com/phy5",notes:"https://docs.google.com/document/d/docid5/preview",npass:"phy5",pdf:"https://drive.google.com/file/d/pdf5/preview",ppass:"phy5"},
+{title:"চল তড়িৎ",ytv:"https://youtube.com/phy6",notes:"https://docs.google.com/document/d/docid6/preview",npass:"phy6",pdf:"https://drive.google.com/file/d/pdf6/preview",ppass:"phy6"},
+{title:"পরমানুর নিউক্লিয়াস",ytv:"https://youtube.com/phy7",notes:"https://docs.google.com/document/d/docid7/preview",npass:"phy7",pdf:"https://drive.google.com/file/d/pdf7/preview",ppass:"phy7"},
+{title:"পদার্থের ভৌত ও রাসায়নিক ধর্মসমূহ",ytv:"https://youtube.com/phy8",notes:"https://docs.google.com/document/d/docid8/preview",npass:"phy8",pdf:"https://drive.google.com/file/d/pdf8/preview",ppass:"phy8"},
+{title:"পর্যায় সারণি এবং মৌলদের ধর্মের পর্যায়বৃত্ততা",ytv:"https://youtube.com/phy9",notes:"https://docs.google.com/document/d/docid9/preview",npass:"phy9",pdf:"https://drive.google.com/file/d/pdf9/preview",ppass:"phy9"},
+{title:"আয়নীয় ও সমযোজী বন্ধন",ytv:"https://youtube.com/phy10",notes:"https://docs.google.com/document/d/docid10/preview",npass:"phy10",pdf:"https://drive.google.com/file/d/pdf10/preview",ppass:"phy10"},
+{title:"তড়িৎ প্রবাহ ও রাসায়নিক বিক্রিয়া",ytv:"https://youtube.com/phy11",notes:"https://docs.google.com/document/d/docid11/preview",npass:"phy11",pdf:"https://drive.google.com/file/d/pdf11/preview",ppass:"phy11"},
+{title:"পরীক্ষাগার ও রাসায়নিক শিল্পে অজৈব রসায়ন",ytv:"https://youtube.com/phy12",notes:"https://docs.google.com/document/d/docid12/preview",npass:"phy12",pdf:"https://drive.google.com/file/d/pdf12/preview",ppass:"phy12"},
+{title:"ধাতুবিদ্যা",ytv:"https://youtube.com/phy13",notes:"https://docs.google.com/document/d/docid13/preview",npass:"phy13",pdf:"https://drive.google.com/file/d/pdf13/preview",ppass:"phy13"},
+{title:"জৈব রসায়ন",ytv:"https://youtube.com/phy14",notes:"https://docs.google.com/document/d/docid14/preview",npass:"phy14",pdf:"https://drive.google.com/file/d/pdf14/preview",ppass:"phy14"},
+],
+[], // জীবন বিজ্ঞান (Biology) - এখানে ভবিষ্যতে chapter অ্যাড করুন
+[]  // অংক (Mathematics) - এখানে ভবিষ্যতে chapter অ্যাড করুন
+];
+
+let currSubj=0;
+function switchSubject(idx){
+  currSubj=idx;
+  document.querySelectorAll('.snav-btn').forEach((b,i)=>b.classList.toggle('active',i==idx));
+  renderChapGrid();
+}
+function renderChapGrid(){
+  let data=allSubj[currSubj],out='';
+  if(data.length===0){
+    out='<div style="font-size:1.13em;font-weight:700;margin:50px 0;color:#b28b65;text-align:center;">এখানে এখনো কিছু নেই<br>শীঘ্রই আপডেট হবে!</div>';
+  }else{
+    data.forEach((ch,idx)=>{
+      out+=`<div class="chapCard">
+        <div class="chapCard-title">${ch.title}</div>
+        <div class="chap-btns">
+          <button class="cbtn" onclick="window.open('${ch.ytv}','_blank');"><span class="cicon">▶️</span>ভিডিও</button>
+          <button class="cbtn" onclick="openSecureModal('notes',${idx})"><span class="cicon lockicon">🔐</span>Notes</button>
+          <button class="cbtn" onclick="openSecureModal('mock',${idx})"><span class="cicon lockicon">📄</span>Mock PDF</button>
+        </div>
+      </div>`;
+    });
+  }
+  document.getElementById('chapGrid').innerHTML=out;
+}
+renderChapGrid();
+
+// --- Secure Modal Logic ---
+let secIdx=0, secMode='';
+function openSecureModal(mode,idx){
+  secIdx=idx;secMode=mode;
+  document.getElementById('secModalBG').style.display='flex';
+  document.getElementById('secureViewBox').style.display='none';
+  document.getElementById('failMsg').innerText='';
+  document.getElementById('secModalLabel').innerText=mode=='notes'?"Notes (View-Only), Password Needed":"Mock PDF (View-Only), Password Needed";
+  document.getElementById('secModalPass').value='';
+  document.getElementById('secModalTitle').innerHTML=mode=='notes'?"🔐 নোটস":"📄 Mock Test PDF";
+}
+function closeSecModal(){document.getElementById('secModalBG').style.display='none';}
+function unlockSecModal(){
+  let ch=allSubj[currSubj][secIdx], p=document.getElementById('secModalPass').value.trim();
+  let cpass = secMode=='notes'?ch.npass:ch.ppass;
+  if(p===cpass){
+    document.getElementById('failMsg').innerText='';
+    document.getElementById('secureViewBox').style.display='block';
+    document.getElementById('secureViewBox').innerHTML=
+      `<iframe src="${secMode=='notes'?ch.notes:ch.pdf}" allow="encrypted-media" sandbox="allow-scripts allow-same-origin"></iframe>
+      <div class="securetxt"></div>`;
+  }else{
+    document.getElementById('failMsg').innerText="❌ পাসওয়ার্ড ভুল!";
+  }
+}
+document.addEventListener('keydown', function(e){
+  if(document.getElementById('secModalBG').style.display=='flex' && ((e.key=='PrintScreen')||e.ctrlKey&&e.key=='p')){e.preventDefault();alert("Screenshot, Print allowed নয়!");}
+});
+document.addEventListener('copy', function(e){
+  if(document.getElementById('secModalBG').style.display=='flex'){e.preventDefault();alert("Copy Blocked!");}
+});
+document.addEventListener('contextmenu', function(e){
+  if(document.getElementById('secModalBG').style.display=='flex'){e.preventDefault();}
+});
+document.addEventListener('selectstart', function(e){
+  if(document.getElementById('secModalBG').style.display=='flex'){e.preventDefault();}
+});
+</script>
+</body>
+</html>
