@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Class 7 | Subhajit Biswas</title>
+  <style>
+body{margin:0;background:linear-gradient(125deg,#edf7fb 0%,#f8fbf4 100%);}
+.header7{padding:27px 6vw 19px 6vw;font-family:'Segoe UI',Noto Sans Bengali,sans-serif;}
+.header-title{font-size:2.15em;font-weight:900;color:#0a789a;text-align:center;letter-spacing:.015em;}
+.header-sub{color:#c07119;font-weight:700;font-size:1.14em;letter-spacing:.03em;text-align:center;}
+#subjectNav{display:flex;gap:14px 7vw;justify-content:center;margin:19px 2vw 7px;}
+.sbtn{background:linear-gradient(90deg,#e7fff2 15%,#d0f4fa 110%);border:none;border-radius:15px;
+  font-size:1.18em;font-weight:900;color:#18729e;padding:13px 36px;box-shadow:0 3.5px 13px #1fffcd22;cursor:pointer;
+  transition:.14s;}
+.sbtn.active,.sbtn:active{background:linear-gradient(90deg,#3efdc3 6%,#cce7fb 100%);color:#137953;}
+.gridChaps{display:flex;flex-wrap:wrap;gap:23px 2vw;justify-content:center;padding:9px 2vw 41px;}
+.chapCard{background:rgba(255,255,255,0.98);border-radius:16px;max-width:370px;width:97vw;min-width:222px;
+  box-shadow:0 2.5px 18px #dfeffc27;padding:23px 13px 17px 18px;animation:popchp7 .35s;font-family:inherit;}
+@keyframes popchp7{0%{opacity:0;transform:scale(.92) translateY(17px);}100%{opacity:1;transform:none;}}
+.chapCard-title{font-size:1.13em;font-weight:900;color:#1c589c;margin-bottom:7px;margin-top:0;}
+.chap-btns{display:flex;gap:9px; margin-top:8px;}
+.cbtn7{flex:1 1 0;background:linear-gradient(95deg,#cbf8fd 18%,#fafcfb 115%);
+  border:none;border-radius:9px;padding:10px 0;
+  color:#1b7979;font-size:1.04em;font-weight:700;cursor:pointer;
+  box-shadow:0 1.5px 7px #bbfee624;transition:.13s;}
+.cbtn7:active{background:linear-gradient(100deg,#e3faf4 15%,#e4fffd 110%);}
+.cicon7{font-size:1.09em;margin-right:6px;}
+.lockicon7{color:#e88a15;}
+.sec-modal-bg{display:none;position:fixed;z-index:770;left:0;top:0;width:100vw;height:100vh;background:rgba(34,39,54,0.39);align-items:center;justify-content:center;}
+.sec-modal{background:#fff;border-radius:20px;max-width:335px;width:91vw;
+  box-shadow:0 19px 36px #defff927,0 2px 11px #c9efd245;padding:21px 14px 9px 14px;position:relative;animation:modalpop .34s;}
+@keyframes modalpop{from{transform:scale(.85) translateY(25px);opacity:0;}to{transform:none;opacity:1;}}
+.secclose{position:absolute;top:12px;right:13px;border:none;background:#f3fff5;font-size:1.15em;color:#099a89;
+  border-radius:50%;width:26px;height:26px;font-weight:800;cursor:pointer;}
+.sec-modal label{font-size:1em;font-weight:800;color:#176591;margin:2px 0 4px;display:block;}
+.sec-modal input[type=password]{width:93%;padding:10px 7px;margin-top:3px;font-size:1.01em;border-radius:7px;border:1.2px solid #bde7e4;}
+.sec-modal button{margin-top:10px;background:linear-gradient(90deg,#b6fff8,#d9fff7);border:none;border-radius:7px;padding:8px 22px;font-size:1.05em;color:#10818f;font-weight:900;}
+.sec-modal .failmsg{color:#bb2037;padding:6px 2px 0;font-size:.99em;}
+.sec-modal iframe{margin-top:11px;width:100%;min-height:326px;border:none;border-radius:7px;}
+.sec-modal .securetxt{color:#ba7e14;font-size:.97em;margin:7px 0 2px;}
+@media (max-width:700px){#subjectNav{gap:9px 2vw;}.gridChaps{gap:13px 1vw;}.chapCard{max-width:98vw;}}
+  </style>
+</head>
+<body>
+  <div class="header7">
+    <div class="header-title">Class 7</div>
+    <div class="header-sub">Subhajit Biswas</div>
+  </div>
+  <div id="subjectNav">
+    <button class="sbtn active" onclick="setSubj(0)">বিজ্ঞান</button>
+    <button class="sbtn" onclick="setSubj(1)">গণিত</button>
+  </div>
+  <div class="gridChaps" id="chapGrid"></div>
+
+  <!-- Secure Modal (Notes/Mock PDF) -->
+  <div id="secModalBG" class="sec-modal-bg">
+    <div class="sec-modal">
+      <button class="secclose" onclick="closeSecModal()">×</button>
+      <div id="secModalTitle"></div>
+      <label id="secModalLabel">Password-Protected Section</label>
+      <input id="secModalPass" type="password" placeholder="Password দিন..." autocomplete="off"/>
+      <button onclick="unlockSecModal()">Unlock</button>
+      <span class="failmsg" id="failMsg"></span>
+      <div id="secureViewBox"></div>
+    </div>
+  </div>
+<script>
+// Science chapters — বাংলা নাম ও sci serial পাসওয়ার্ড
+const chSci7 = [
+{idx:1, name:"ভৌত পরিবেশ"},
+{idx:2, name:"সময় ও গতি"},
+{idx:3, name:"পরমাণু, অণু ও রাসায়নিক বিক্রিয়া"},
+{idx:4, name:"পরিবেশ গঠনে পদার্থের ভূমিকা"},
+{idx:5, name:"মানুষের খাদ্য"},
+{idx:6, name:"পরিবেশের সজীব উপাদানের গঠনগজ্ঞ বৈচিত্র্য ও কার্যগত গতি"}
+];
+// গণিতের জন্য empty রাখুন — চাইলে পরে এখান থেকে array-এ যুক্ত করুন
+const chMath7 = [
+  // {idx:1, name:"[Math Chapter Name]"}
+];
+let allSubj7 = [chSci7, chMath7]; // 0: Sci, 1: Math
+let currSubj7 = 0;
+function setSubj(idx){
+  currSubj7=idx;
+  document.querySelectorAll('.sbtn').forEach((b,i)=>b.classList.toggle('active',i==idx));
+  renderChapGrid7();
+}
+setSubj(0);
+function renderChapGrid7(){
+  let data=allSubj7[currSubj7], out='';
+  if(data.length===0){
+    out='<div style="font-size:1.08em;font-weight:700;margin:50px 0;color:#b38b75;text-align:center;">দুঃখিত, এখানে এখনো কিছু নেই।</div>';
+  }else{
+    data.forEach((ch,i)=>{
+      let idx=ch.idx;
+      let vidlink = `https://youtube.com/sci${idx}`;
+      let noteslink = `https://docs.google.com/document/d/sci${idx}notes/preview`;
+      let pdflink = `https://drive.google.com/file/d/sci${idx}mock/preview`;
+      let pass = `sci${idx}`;
+      out+=`<div class="chapCard">
+        <div class="chapCard-title">${idx}. ${ch.name}</div>
+        <div class="chap-btns">
+          <button class="cbtn7" onclick="window.open('${vidlink}','_blank');"><span class="cicon7">▶️</span>ভিডিও</button>
+          <button class="cbtn7" onclick="openSecureModal('notes',${idx})"><span class="cicon7 lockicon7">🔐</span>Notes</button>
+          <button class="cbtn7" onclick="openSecureModal('mock',${idx})"><span class="cicon7 lockicon7">📄</span>Mock PDF</button>
+        </div>
+      </div>`;
+    });
+  }
+  document.getElementById('chapGrid').innerHTML=out;
+}
+
+// Secure modal logic
+let currIdx=1, currMode='notes';
+function openSecureModal(mode,idx){
+  currIdx=idx;currMode=mode;
+  document.getElementById('secModalBG').style.display='flex';
+  document.getElementById('secureViewBox').style.display='none';
+  document.getElementById('failMsg').innerText='';
+  document.getElementById('secModalLabel').innerText=mode=='notes'?"Notes (View-Only), Password Needed":"Mock PDF (View-Only), Password Needed";
+  document.getElementById('secModalPass').value='';
+  document.getElementById('secModalTitle').innerHTML=mode=='notes'?"🔐 নোটস":"📄 Mock PDF";
+}
+function closeSecModal(){document.getElementById('secModalBG').style.display='none';}
+function unlockSecModal(){
+  let pass=document.getElementById('secModalPass').value.trim();
+  let realpass=`sci${currIdx}`;
+  let notes=`https://docs.google.com/document/d/sci${currIdx}notes/preview`;
+  let pdf=`https://drive.google.com/file/d/sci${currIdx}mock/preview`;
+  if(pass===realpass){
+    document.getElementById('failMsg').innerText='';
+    document.getElementById('secureViewBox').style.display='block';
+    let content=currMode=='notes'?notes:pdf;
+    document.getElementById('secureViewBox').innerHTML=
+     `<iframe src="${content}" allow="encrypted-media" sandbox="allow-scripts allow-same-origin"></iframe>
+      <div class="securetxt">View-Only; </div>`;
+  }else{
+    document.getElementById('failMsg').innerText="❌ পাসওয়ার্ড ভুল!";
+  }
+}
+document.addEventListener('keydown', function(e){
+  if(document.getElementById('secModalBG').style.display=='flex' && ((e.key=='PrintScreen')||e.ctrlKey&&e.key=='p')){e.preventDefault();alert("Screenshot, Print allowed নয়!");}
+});
+document.addEventListener('copy', function(e){
+  if(document.getElementById('secModalBG').style.display=='flex'){e.preventDefault();alert("Copy Blocked!");}
+});
+document.addEventListener('contextmenu', function(e){
+  if(document.getElementById('secModalBG').style.display=='flex'){e.preventDefault();}
+});
+document.addEventListener('selectstart', function(e){
+  if(document.getElementById('secModalBG').style.display=='flex'){e.preventDefault();}
+});
+</script>
+</body>
+</html>
